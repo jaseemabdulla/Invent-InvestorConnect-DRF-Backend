@@ -14,7 +14,7 @@ class BaseUser(AbstractUser):
     username = models.CharField(max_length=20, unique=False,blank=True,null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username','role']
-    role = models.CharField(max_length=15, choices=ROLES)
+    role = models.CharField(max_length=15, choices=ROLES,default='entrepreneur')
     is_blocked = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=20,unique=True)
     

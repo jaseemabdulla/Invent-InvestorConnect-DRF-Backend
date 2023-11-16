@@ -5,7 +5,7 @@ class LoginSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
     password = serializers.CharField()
-    
+      
     
 class SignupSerializer(serializers.ModelSerializer):
         class Meta:

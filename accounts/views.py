@@ -122,6 +122,75 @@ class RefreshTokenView(APIView):
         
         except Exception as e:
             return Response({'error':f'error:{e}'},status=status.HTTP_400_BAD_REQUEST)
+        
+        
+class AdminLoginApi(APIView):
+    
+    def post(self, request):
+        
+        try:
+            data = request.data
+            serializer = LoginSerializer(data= data)
+            if serializer.is_valid():
+                print('lllllllllllllllllllllllllllllllllllllll')
+                email = serializer.data['email']
+                password = serializer.data['password']
+                
+                user = authenticate(email= email, password=password)
+               
+                
+                if user is None:
+                    data = {
+                        'message':'invalid credentials'
+                    }
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                
+                if user.is_blocked:
+                    data = {
+                        'message': 'Your account is blocked. Please contact support for assistance.'
+                    }
+                    return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+                
+                if not user.is_superuser:
+                    data = {
+                        'message': 'You do not have permission to access the admin panel.'
+                    }
+                    
+                    return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+                    
+                serialized = SignupSerializer(instance=user) 
+                serialized_user = serialized.data
+                
+                refresh = RefreshToken.for_user(user)
+                token = {
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token)
+                }
+                
+                data = {
+                    'user':serialized_user,
+                    'token':token,
+                    'message':'login succesfully'
+                }
+                
+                return Response(data, status=status.HTTP_200_OK)
+            
+            data = {
+                'messege':'something went wrong',
+                'data': serializer.errors
+            }
+            
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            print(e)
+            data = {
+                'message': 'Internal server error',
+            }
+            return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+                
             
             
   

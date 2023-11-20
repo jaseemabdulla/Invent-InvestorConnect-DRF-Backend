@@ -8,6 +8,9 @@ from rest_framework import status
 import jwt
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 
 # Create your views here.
 
@@ -183,11 +186,51 @@ class AdminLoginApi(APIView):
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            print(e)
+            print(f'e')
             data = {
                 'message': 'Internal server error',
             }
             return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        
+class ListInvstorsApi(generics.ListAPIView):
+    queryset = get_user_model().objects.filter(role = "investor")  
+    serializer_class = SignupSerializer
+    permission_classes = [IsAuthenticated]  
+    
+    
+class ListEntrepreneurApi(generics.ListAPIView):
+    queryset = get_user_model().objects.filter(role = "entrepreneur")  
+    serializer_class = SignupSerializer      
+    permission_classes = [IsAuthenticated]
+    
+    
+# class BlockUser(generics.UpdateAPIView):
+#     queryset = get_user_model().objects.all()
+#     serializer_class = SignupSerializer
+    
+#     def update(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         instance.is_blocked = not instance.is_blocked
+#         instance.save()
+#         serializer = SignupSerializer(instance)
+#         return Response(user = serializer.data,status=status.HTTP_200_OK)    
+
+@api_view(['POST'])
+def block_unblock_user(request, user_id):
+    try:
+        user = get_user_model().objects.get(id= user_id)
+        user.is_blocked = not user.is_blocked
+        user.save()
+        serialaizer = SignupSerializer(user)
+        return Response(serialaizer.data,status=status.HTTP_200_OK) 
+    except get_user_model().DoesNotExist:
+        return Response({'detail':'user not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    
+    
+     
         
         
                 

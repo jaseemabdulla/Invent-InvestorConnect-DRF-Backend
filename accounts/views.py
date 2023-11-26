@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializer import LoginSerializer,SignupSerializer
+from .serializer import LoginSerializer,SignupSerializer,EntrepreneurSerializer,InvestorSerializer
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,6 +11,9 @@ from django.conf import settings
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
+from .models import EntrepreneurProfile,InvestorProfile,BaseUser
+from .permissions import IsEntrepreneur
+from rest_framework import serializers
 
 # Create your views here.
 
@@ -41,9 +44,15 @@ class LoginApi(APIView):
                         'message': 'Your account is blocked. Please contact support for assistance.'
                     }
                     return Response(data,status=status.HTTP_403_FORBIDDEN)
+                if user.role == 'entrepreneur':
+                    ent_obj = EntrepreneurProfile.objects.filter(user=user).first()
+                    serialized = EntrepreneurSerializer(instance=ent_obj)
+                    serialized_user = serialized.data 
+                elif user.role == 'investor':
+                    investor_obj = InvestorProfile.objects.filter(user=user).first()   
+                    serialized = InvestorSerializer(instance=investor_obj)
+                    serialized_user = serialized.data
                 
-                serialized = SignupSerializer(instance=user)
-                serialized_user = serialized.data 
                 refresh = RefreshToken.for_user(user)
                 token = {
                     'refresh': str(refresh),
@@ -70,20 +79,40 @@ class LoginApi(APIView):
             
             
             
-class SignUpApi(APIView):
+class EntrepreneurSignUpApi(APIView):
     
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            EntrepreneurProfile.objects.create(user = user)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+
+        data = {
+                'message': 'something went wrong',
+                'data' : serializer.errors
+            }
+        
+        return Response(data,status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class InvestorSignUpApi(APIView):
+    
+    def post(self, request):
+        serializer = SignupSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            user.role = 'investor'
+            user.save()
+            InvestorProfile.objects.create(user = user)
             return Response(serializer.data,status=status.HTTP_200_OK)
         
         data = {
                 'message': 'something went wrong',
                 'data' : serializer.errors
             }
-                
-        return Response(data,status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(data,status=status.HTTP_400_BAD_REQUEST)    
     
 class RefreshTokenView(APIView):
     def post(self, request):
@@ -206,16 +235,6 @@ class ListEntrepreneurApi(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     
     
-# class BlockUser(generics.UpdateAPIView):
-#     queryset = get_user_model().objects.all()
-#     serializer_class = SignupSerializer
-    
-#     def update(self, request, *args, **kwargs):
-#         instance = self.get_object()
-#         instance.is_blocked = not instance.is_blocked
-#         instance.save()
-#         serializer = SignupSerializer(instance)
-#         return Response(user = serializer.data,status=status.HTTP_200_OK)    
 
 @api_view(['POST'])
 def block_unblock_user(request, user_id):
@@ -227,6 +246,62 @@ def block_unblock_user(request, user_id):
         return Response(serialaizer.data,status=status.HTTP_200_OK) 
     except get_user_model().DoesNotExist:
         return Response({'detail':'user not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    
+class UpdateEnterpreneurProfile(APIView):
+    
+    permission_classes = [IsAuthenticated, IsEntrepreneur]
+    
+    def post(self, request):
+        user = request.user
+        entrepreneur_obj = EntrepreneurProfile.objects.filter(user = user).first() 
+        
+        data = request.data
+        
+        user_data = {}
+        entrepreneur_data = {}
+        
+        # Check for the existence of keys before accessing them
+        if 'phone_number' in data:
+            user_data['phone_number'] = data['phone_number']
+        if 'first_name' in data:
+            user_data['first_name'] = data['first_name']
+        if 'linkedin_link' in data:
+            entrepreneur_data['linkedin_link'] = data['linkedin_link']
+        if 'profile_picture' in data:
+            entrepreneur_data['profile_picture'] = data['profile_picture']
+            
+            
+        try:
+            # Update user data
+            user_serializer = SignupSerializer(instance=user, data=user_data, partial=True)
+            user_serializer.is_valid(raise_exception=True)  # Raise an exception for invalid data
+            updated_user = user_serializer.save()
+            print(updated_user) 
+            
+            # Update entrepreneur data
+            entrepreneur_serializer = EntrepreneurSerializer(instance=entrepreneur_obj, data=entrepreneur_data, partial=True)
+            entrepreneur_serializer.is_valid(raise_exception=True)  # Raise an exception for invalid data
+            updated_ent = entrepreneur_serializer.save()
+
+            data = {
+                'user': entrepreneur_serializer.data,
+                'message':'Profile updated successfully'
+            }
+            
+            return Response(data, status=status.HTTP_200_OK)
+            
+        except serializers.ValidationError as e:
+            # Return response with validation errors
+            return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+                 
+                
+        
+    
+
+        
+
+        
     
     
     

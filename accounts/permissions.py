@@ -8,3 +8,18 @@ class IsEntrepreneur(BasePermission):
             # Check if the user has the role 'entrepreneur'
             return request.user.role == 'entrepreneur'
         return False
+    
+    
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return request.user.role == 'admin'
+        return False
+    
+    
+class IsInvestor(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return request.user.role == 'investor'
+        return False
+              

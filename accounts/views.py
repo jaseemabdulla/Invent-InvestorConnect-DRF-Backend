@@ -200,7 +200,7 @@ class AdminLoginApi(APIView):
                 }
                 
                 data = {
-                    'user':serialized_user,
+                    'user':{'user':serialized_user},
                     'token':token,
                     'message':'login succesfully'
                 }

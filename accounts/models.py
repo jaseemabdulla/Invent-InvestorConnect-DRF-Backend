@@ -37,7 +37,7 @@ class EntrepreneurProfile(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):
-        return self.user.email
+        return self.user.email 
     
     
 class AdminProfile(models.Model):

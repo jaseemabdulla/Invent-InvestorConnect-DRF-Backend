@@ -12,3 +12,4 @@ urlpatterns = [
     path('userblock/<int:user_id>', block_unblock_user),
     path('updateEnterpreneur/',UpdateEnterpreneurProfile.as_view()),
 ]
+  

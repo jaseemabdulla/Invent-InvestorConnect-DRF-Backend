@@ -8,7 +8,8 @@ class BaseUser(AbstractUser):
     ROLES = (
         ('investor','Investor'),
         ('entrepreneur','Entrepreneur'),
-        ('admin','Admin')
+        ('admin','Admin'),
+        ('mentor','Mentor')
     )
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=20, unique=False,blank=True,null=True)
@@ -27,6 +28,15 @@ class InvestorProfile(models.Model):
     
     def __str__(self):
         return self.user.email
+    
+    
+class MentorProfile(models.Model):
+    user = models.OneToOneField(BaseUser, on_delete=models.CASCADE) 
+    bio = models.TextField(blank=True,null=True)
+    profile_picture = models.FileField(upload_to='mentor_profile/', blank=True,null=True)
+    
+    def __str__(self):
+        return self.user.email    
 
 
 class EntrepreneurProfile(models.Model):

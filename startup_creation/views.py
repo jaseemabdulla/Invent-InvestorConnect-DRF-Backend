@@ -76,6 +76,38 @@ class ListApprovedStartups(generics.ListAPIView):
 class ListRejectedStartups(generics.ListAPIView):
     queryset = StartupDetail.objects.filter(approval_status = 'rejected')
     serializer_class = StartupGetSerializer
-    permission_classes = [IsAuthenticated,IsAdmin]    
+    permission_classes = [IsAuthenticated,IsAdmin]
+    
+    
+class GetSingleStartup(generics.RetrieveAPIView):
+    queryset = StartupDetail.objects.all()
+    serializer_class = StartupGetSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+    
+    
+# update the staus of startup 
+
+class UpdateStartupStatus(generics.RetrieveUpdateAPIView):
+    queryset = StartupDetail.objects.all()
+    serializer_class = StartupGetSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+    
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        new_status = request.data.get('approval_status')
+        
+        # validation for status
+        
+        if new_status not in dict(StartupDetail.APPROVAL_CHOICES).keys():
+            return Response({'messege':'Invalid approvel status'},status=status.HTTP_400_BAD_REQUEST)
+        
+        instance.approval_status = new_status
+        instance.save()
+        
+        serializer = self.get_serializer(instance)
+        return Response({'startup':serializer.data,'message': 'Startup status updated successfully'}, status=status.HTTP_200_OK)
+            
+        
+            
               
         

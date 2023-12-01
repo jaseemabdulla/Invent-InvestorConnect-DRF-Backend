@@ -294,6 +294,11 @@ class UpdateEnterpreneurProfile(APIView):
         except serializers.ValidationError as e:
             # Return response with validation errors
             return Response({'errors': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+
+           
                  
                 
         

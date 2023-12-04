@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     
     'accounts',
     'startup_creation',
+    'mentor_management',
+    'payment',
     
     'rest_framework',
     'rest_framework_simplejwt',
@@ -202,6 +204,8 @@ SIMPLE_JWT = {
 }
 
 
+SITE_URL = 'http://localhost:5173'
+
 
 # s3 bucket 
 
@@ -214,3 +218,8 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL =  None
 AWS_S3_VERITY = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+# Stripe payment 
+
+STRIPE_SECRET_KEY = 'sk_test_51OJZTaSIudetI30UigphlvYTYCJTmd7rZR1S3ZkDPiorCALUOcTjsg8vnHYYHA5GWlZU0eTAdw1E3dhSW95XoSiP00Ped8OsNn'

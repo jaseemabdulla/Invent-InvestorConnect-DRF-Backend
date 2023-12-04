@@ -34,6 +34,8 @@ class MentorProfile(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE) 
     bio = models.TextField(blank=True,null=True)
     profile_picture = models.FileField(upload_to='mentor_profile/', blank=True,null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+    joined_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):
         return self.user.email    

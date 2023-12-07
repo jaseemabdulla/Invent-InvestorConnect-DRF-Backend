@@ -16,7 +16,7 @@ from django.contrib.auth.hashers import make_password
 class CreateMentorProfile(generics.CreateAPIView):
     queryset = MentorProfile.objects.all()
     serializer_class = MentorProfileSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAdmin]
     
     def create(self, request, *args, **kwargs):
         try:

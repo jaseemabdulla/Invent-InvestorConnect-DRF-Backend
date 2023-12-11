@@ -9,9 +9,18 @@ from rest_framework import status
 from rest_framework import serializers
 from .models import StartupDetail
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 
 
 # Create your views here.
+
+
+# for pagination
+
+class ListAllStartupsPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
  # ============================== Entrepreneur ===============================
@@ -56,7 +65,46 @@ class ListUserStartups(generics.ListAPIView):
         
         user_startups = StartupDetail.objects.filter(entrepreneurs__user=user)
         
-        return user_startups      
+        return user_startups  
+    
+
+# list all startups 
+
+class ListAllStartups(generics.ListAPIView):
+    queryset = StartupDetail.objects.all().order_by('-created_at')
+    serializer_class = StartupGetSerializer
+    pagination_class = ListAllStartupsPagination
+    
+    def get_queryset(self):
+        # Get the 'startup_industry' query parameter from the request
+        industry = self.request.query_params.get('startup_industry', None)
+
+        # Filter the queryset based on the provided industry
+        if industry == 'all':
+            return self.queryset
+        else:
+            return self.queryset.filter(startup_industry=industry)
+    
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        # Calculate total pages based on count and items per page
+        items_per_page = self.paginator.page_size
+        total_items = response.data['count']
+        total_pages = -(-total_items // items_per_page)  # Equivalent to ceil(total_items / items_per_page)
+
+        # Add total pages and current page to the response data
+        response.data['total_pages'] = total_pages
+        response.data['current_page'] = self.paginator.page.number
+        
+        return response
+  
+# startup's IndustryChoices 
+    
+class IndustryChoicesView(APIView):
+    def get(self, request, *args, **kwargs):
+        industry_choices = [choice for choice in StartupDetail.INDUSTRY_CHOICES]
+        return Response({'industry_choices': industry_choices})
+    
         
 
 # ============================== Admin ===============================

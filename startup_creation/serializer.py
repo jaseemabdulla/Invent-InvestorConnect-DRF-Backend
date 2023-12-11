@@ -17,5 +17,8 @@ class StartupGetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = StartupDetail
-        fields = '__all__'        
+        fields = '__all__'  
+        ordering = ['-created_at']    
+        
+               
         

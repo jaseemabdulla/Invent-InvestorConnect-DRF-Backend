@@ -48,5 +48,5 @@ class StartupDetail(models.Model):
         max_length=50, choices=APPROVAL_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     
-   
+    
         

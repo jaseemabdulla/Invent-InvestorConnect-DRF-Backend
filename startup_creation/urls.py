@@ -1,12 +1,15 @@
 from django.urls import path
-from .views import CreateStartup,ListPendingStartups,ListApprovedStartups,ListRejectedStartups,ListUserStartups,GetSingleStartup,UpdateStartupStatus
+from .views import CreateStartup, ListPendingStartups, ListApprovedStartups, ListRejectedStartups, ListUserStartups, GetSingleStartup, UpdateStartupStatus, ListAllStartups, IndustryChoicesView
 
 urlpatterns = [
-    path('addStartup/',CreateStartup.as_view()),
-    path('listPendingStartups/',ListPendingStartups.as_view()),
-    path('listApprovedStartups/',ListApprovedStartups.as_view()),
-    path('listRejectedStartups/',ListRejectedStartups.as_view()),
-    path('listUserStartups/',ListUserStartups.as_view()),
-    path('getSingleStartup/<int:pk>/',GetSingleStartup.as_view()),
-    path('updateStartupStatus/<int:pk>/',UpdateStartupStatus.as_view()),
+    path('addStartup/', CreateStartup.as_view()),
+    path('listPendingStartups/', ListPendingStartups.as_view()),
+    path('listApprovedStartups/', ListApprovedStartups.as_view()),
+    path('listRejectedStartups/', ListRejectedStartups.as_view()),
+    path('listUserStartups/', ListUserStartups.as_view()),
+    path('getSingleStartup/<int:pk>/', GetSingleStartup.as_view()),
+    path('updateStartupStatus/<int:pk>/', UpdateStartupStatus.as_view()),
+    path('updateStartupStatus/<int:pk>/', UpdateStartupStatus.as_view()),
+    path('listAllStartups/', ListAllStartups.as_view()),
+    path('industryChoices/', IndustryChoicesView.as_view())
 ]

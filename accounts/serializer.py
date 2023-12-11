@@ -5,6 +5,12 @@ class LoginSerializer(serializers.Serializer):
     
     email = serializers.EmailField()
     password = serializers.CharField()
+    
+    
+class LoginGoogleSerializer(serializers.Serializer):
+    
+    email = serializers.EmailField()
+     
       
     
 class SignupSerializer(serializers.ModelSerializer):

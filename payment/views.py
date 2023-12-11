@@ -8,6 +8,10 @@ from rest_framework.response import Response
 from django.shortcuts import redirect
 from .models import Payment
 from datetime import datetime
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -72,6 +76,27 @@ class PaymentSuccessView(APIView):
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+            
+            
+class PaymentValidation(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = request.user
+        try:
+            payment = get_object_or_404(Payment,user=user)
+
+            if payment.is_subscription_active():
+                return Response({'message':'payment valid'},status=status.HTTP_200_OK)
+            
+            else:
+                return Response({'message':'Your Subscription Expiared'},status=status.HTTP_402_PAYMENT_REQUIRED)
+            
+        except ObjectDoesNotExist:
+            
+            return Response({'message':'complete your payment'},status=status.HTTP_404_NOT_FOUND)
+                  
+        
+                  
                     
 
         

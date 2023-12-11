@@ -23,5 +23,5 @@ urlpatterns = [
     path('startup/',include('startup_creation.urls')),
     path('mentor/',include('mentor_management.urls')),
     path('payment/',include('payment.urls')),
-    
+ 
 ]

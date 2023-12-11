@@ -15,6 +15,7 @@ from django.conf import settings
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'accounts',
     'startup_creation',
     'mentor_management',
@@ -50,7 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -166,7 +169,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -211,8 +214,8 @@ SITE_URL = 'http://localhost:5173'
 
 # s3 bucket 
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID1')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY1')
 AWS_STORAGE_BUCKET_NAME = 'startupgear'
 AWS_S3_SIGNATURE_NAME = 's3v4',
 AWS_S3_REGION_NAME = 'eu-north-1'
@@ -224,4 +227,6 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Stripe payment 
 
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY1')
+
+

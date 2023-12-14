@@ -47,6 +47,8 @@ class EntrepreneurProfile(models.Model):
     profile_picture = models.FileField(upload_to='entrepreneur_profile/', blank=True,null=True)
     linkedin_link = models.URLField(blank=True, null=True)
     joined_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    mentor = models.ForeignKey(MentorProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='entrepreneurs')
+
     
     def __str__(self):
         return self.user.email 

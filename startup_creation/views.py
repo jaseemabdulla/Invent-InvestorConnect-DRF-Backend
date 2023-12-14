@@ -59,14 +59,27 @@ class CreateStartup(APIView):
 class ListUserStartups(generics.ListAPIView):
     serializer_class = StartupGetSerializer
     permission_classes = [IsAuthenticated, IsEntrepreneur]  
+    pagination_class = ListAllStartupsPagination
     
     def get_queryset(self):
         user = self.request.user
         
-        user_startups = StartupDetail.objects.filter(entrepreneurs__user=user)
+        user_startups = StartupDetail.objects.filter(entrepreneurs__user=user).order_by('-created_at')
         
-        return user_startups  
-    
+        return user_startups 
+     
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        # Calculate total pages based on count and items per page
+        items_per_page = self.paginator.page_size
+        total_items = response.data['count']
+        total_pages = -(-total_items // items_per_page)  # Equivalent to ceil(total_items / items_per_page)
+
+        # Add total pages and current page to the response data
+        response.data['total_pages'] = total_pages
+        response.data['current_page'] = self.paginator.page.number
+        
+        return response    
 
 # list all startups 
 
@@ -130,7 +143,7 @@ class ListRejectedStartups(generics.ListAPIView):
 class GetSingleStartup(generics.RetrieveAPIView):
     queryset = StartupDetail.objects.all()
     serializer_class = StartupGetSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     
     
 # update the staus of startup 

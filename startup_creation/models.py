@@ -36,6 +36,13 @@ class StartupDetail(models.Model):
         ('expansion', 'Expansion Phase'),
         ('exit', 'Exit Phase'),
     ]
+    
+    LEVEL_CHOICES = [
+        ('biginner','Biginner'),
+        ('intermediate','Intermediate'),
+        ('completed','completed'),
+        ('pitch','Ready to Pitch')
+    ]
  
     entrepreneurs = models.ManyToManyField(
         EntrepreneurProfile, related_name='startups')
@@ -46,6 +53,7 @@ class StartupDetail(models.Model):
     presentation_video = models.FileField(upload_to='startup_videos/')
     approval_status = models.CharField(
         max_length=50, choices=APPROVAL_CHOICES, default='pending')
+    startup_level = models.CharField(max_length=50, choices=LEVEL_CHOICES, null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     

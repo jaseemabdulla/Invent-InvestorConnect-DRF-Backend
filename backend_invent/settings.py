@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,10 +48,12 @@ INSTALLED_APPS = [
     'startup_creation',
     'mentor_management',
     'payment',
+    'chat',
     
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'channels',
 
 ]
 
@@ -85,6 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend_invent.wsgi.application'
+ASGI_APPLICATION = 'backend_invent.asgi.application'
 
 
 # Database
@@ -228,5 +232,11 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Stripe payment 
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY1')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 

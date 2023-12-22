@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BaseUser,EntrepreneurProfile,InvestorProfile
+from .models import BaseUser,EntrepreneurProfile,InvestorProfile,MentorProfile
 
 class LoginSerializer(serializers.Serializer):
     
@@ -46,4 +46,10 @@ class InvestorSerializer(serializers.ModelSerializer):
         fields = '__all__'  
         depth = 2      
 
+
+class MentorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MentorProfile
+        fields = '__all__'  
+        depth = 2   
             

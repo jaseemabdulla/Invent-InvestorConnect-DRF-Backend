@@ -22,4 +22,10 @@ class IsInvestor(BasePermission):
         if request.user.is_authenticated:
             return request.user.role == 'investor'
         return False
+    
+class IsMentor(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return request.user.role == 'mentor'
+        return False    
               

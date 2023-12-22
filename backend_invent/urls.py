@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from . import routing
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,5 +24,6 @@ urlpatterns = [
     path('startup/',include('startup_creation.urls')),
     path('mentor/',include('mentor_management.urls')),
     path('payment/',include('payment.urls')),
- 
+    path('chat/',include('chat.urls')),
+
 ]

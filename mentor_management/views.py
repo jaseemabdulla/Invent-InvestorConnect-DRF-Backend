@@ -4,11 +4,12 @@ from rest_framework.views import APIView
 from accounts.models import MentorProfile,BaseUser,EntrepreneurProfile
 from .serializer import MentorProfileSerializer,UserSerializer,MentorProfileGetSerializer,MentorRequestSerializer
 from rest_framework.permissions import IsAuthenticated
-from accounts.permissions import IsAdmin, IsEntrepreneur, IsInvestor
+from accounts.permissions import IsAdmin, IsEntrepreneur, IsInvestor, IsMentor
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from .models import MentorRequest
+from accounts.serializer import EntrepreneurSerializer
 
 # Create your views here.
 
@@ -111,7 +112,7 @@ class Listmentors(generics.ListAPIView):
     
 # get mentor request object 
 
-class GetMentorRequesObj(APIView):
+class GetMentorRequestObj(APIView):
     permission_classes = [IsEntrepreneur]
     def get(self,request):
         user = request.user
@@ -152,6 +153,24 @@ class CreateMentorRequest(APIView):
                 return Response({'message':True},status=status.HTTP_201_CREATED)
         except Exception as e:
             print(e)   
+            
+            
+# get all entrepreneurs associated with the mentor
+
+class ListEntrepreneursOfMentor(generics.ListAPIView):
+    permission_classes = [IsMentor]
+    serializer_class = EntrepreneurSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        mentor_obj = MentorProfile.objects.get(user = user)
+        entrepreneurs = EntrepreneurProfile.objects.filter(mentor = mentor_obj)
+        
+        return entrepreneurs
+                
+            
+            
+
             
             
             

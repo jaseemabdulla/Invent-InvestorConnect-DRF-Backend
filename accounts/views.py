@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializer import LoginSerializer,SignupSerializer,EntrepreneurSerializer,InvestorSerializer,LoginGoogleSerializer
+from .serializer import LoginSerializer,SignupSerializer,EntrepreneurSerializer,InvestorSerializer,LoginGoogleSerializer,MentorSerializer
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from django.conf import settings
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from .models import EntrepreneurProfile,InvestorProfile,BaseUser
+from .models import EntrepreneurProfile,InvestorProfile,BaseUser,MentorProfile
 from .permissions import IsEntrepreneur
 from rest_framework import serializers
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -54,6 +54,10 @@ class LoginApi(APIView):
                     elif user.role == 'investor':
                         investor_obj = InvestorProfile.objects.filter(user=user).first()   
                         serialized = InvestorSerializer(instance=investor_obj)
+                        serialized_user = serialized.data
+                    elif user.role == 'mentor':
+                        mentor_obj = MentorProfile.objects.filter(user=user).first()
+                        serialized = MentorSerializer(instance=mentor_obj)
                         serialized_user = serialized.data
                     
                     refresh = RefreshToken.for_user(user)

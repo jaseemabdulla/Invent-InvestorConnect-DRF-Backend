@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateMentorProfile,Listmentors,CreateMentorRequest,ListMentorRequest,AssignMentor,GetMentorRequesObj
+from .views import CreateMentorProfile,Listmentors,CreateMentorRequest,ListMentorRequest,AssignMentor,GetMentorRequestObj,ListEntrepreneursOfMentor
 
 
 urlpatterns = [
@@ -8,5 +8,6 @@ urlpatterns = [
     path('createMentorRequest/',CreateMentorRequest.as_view()),
     path('listMentorRequest/',ListMentorRequest.as_view()),
     path('assignMentor/',AssignMentor.as_view()),
-    path('getMentorRequesObj/',GetMentorRequesObj.as_view()),
+    path('getMentorRequestObj/',GetMentorRequestObj.as_view()),
+    path('listEntrepreneursOfMentor/',ListEntrepreneursOfMentor.as_view()),
 ]

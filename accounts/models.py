@@ -19,6 +19,8 @@ class BaseUser(AbstractUser):
     is_blocked = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=20,unique=True)
     joined_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    otp = models.CharField(max_length=6, null=True, blank=True)  # Add the otp
+    email_verified = models.BooleanField(default=True)
     
     
 class InvestorProfile(models.Model):

@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from .tasks import send_subscription_expiration_email,send_subscription_success_email
 
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -67,6 +68,24 @@ class PaymentSuccessView(APIView):
                 user=request.user,
                 defaults=subscription_data
             )
+            
+            # # Calculate the date 2 days before the expiration date
+            # reminder_date = subscription_data['current_period_end'] - timezone.timedelta(days=2)
+            
+            # # Calculate the date 2 minutes after the current_period_end
+            # success_date = subscription_data['current_period_start'] + timezone.timedelta(minutes=2)
+            
+            # # Schedule the Celery task for reminder date
+            # send_subscription_expiration_email.apply_async(
+            #     args=[request.user.id],
+            #     eta=reminder_date
+            # )
+            
+            # # Schedule the Celery task for success date
+            # send_subscription_success_email.apply_async(
+            #     args=[request.user.id],
+            #     eta=success_date
+            # )
 
             return Response(status=status.HTTP_200_OK)
         

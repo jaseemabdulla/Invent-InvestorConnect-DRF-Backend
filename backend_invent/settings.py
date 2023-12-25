@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'channels',
+    'django_celery_beat',
 
 ]
 
@@ -246,5 +247,23 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
+
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+
+# Celery Beat Configuration
+CELERY_BEAT_SCHEDULE = {
+    'send-periodic-emails': {
+        'task': 'accounts.tasks.send_periodic_emails',
+        'schedule': 60.0,  # Run every 60 seconds (adjust as needed)
+    },
+}
 
 

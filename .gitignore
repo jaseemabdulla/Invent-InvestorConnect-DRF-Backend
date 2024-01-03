@@ -1,2 +1,8 @@
 venv_invent
 .env
+__pycache__/
+*.pyc
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir
+db.sqlite3

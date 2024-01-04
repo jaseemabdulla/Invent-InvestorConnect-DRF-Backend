@@ -136,10 +136,7 @@ REST_FRAMEWORK = {
 }
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Example: Your React app URL
-    # Add more origins as needed
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization
@@ -214,7 +211,7 @@ SIMPLE_JWT = {
 }
 
 
-SITE_URL = 'http://localhost:5173'
+SITE_URL = os.getenv('SITE_URL')
 
 
 # s3 bucket 
@@ -236,8 +233,11 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY1')
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
 }
 
 # Email Configuration
